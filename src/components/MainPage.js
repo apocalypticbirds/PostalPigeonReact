@@ -22,8 +22,8 @@ class MainPage extends Component {
             nrOfGroups: 4,
             activeGroup: this.props.actualConversationID,
             message: 'piszę do ',
-            messages: this.props.onConvarsationChange(this.props.actualConversationID)
-                
+            messages: this.props.onConvarsationChange(this.props.actualConversationID),
+            chatName: this.props.getChatName(this.props.actualConversationID)  
 
         };
     }
@@ -56,7 +56,8 @@ class MainPage extends Component {
         console.log("Group changed");
         this.setState({
             activeGroup: id,
-            messages: this.props.onConvarsationChange(id)
+            messages: this.props.onConvarsationChange(id),
+            chatName: this.props.getChatName(id) 
         });
         console.log(`Active group: ${this.state.activeGroup}`);
     };
@@ -87,7 +88,7 @@ class MainPage extends Component {
                     <div id='chat'>
                         <div className='chat-head'>
 
-                            <h3>Hannah Reed</h3>
+                            <h3>{this.state.chatName}</h3>
 
 
                             <div className='send-form'>

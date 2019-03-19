@@ -15,6 +15,7 @@ const loadConversations = ()=>{
     return [
       {
         id: 345,
+        name: "John Lennon",
         messages: [
                 {id: 0, message: 'Cześć!', id_sender: 154},
                 {id: 1, message: 'Hej', id_sender: 463},
@@ -25,6 +26,7 @@ const loadConversations = ()=>{
       },
       {
         id: 243,
+        name: "Alisa",
         messages: [
             { id: 0, message: 'Cześć!', id_sender: 154 },
             { id: 1, message: 'Pa', id_sender: 463 },
@@ -35,6 +37,7 @@ const loadConversations = ()=>{
       },
       {
         id: 834,
+        name: "Wiktor",
         messages: [
             { id: 0, message: 'Cześć!', id_sender: 154 },
             { id: 1, message: 'No Hej', id_sender: 463 },
@@ -45,6 +48,7 @@ const loadConversations = ()=>{
       },
       {
         id: 153,
+        name: "Julia",
         messages: [
             { id: 0, message: 'Cześć!', id_sender: 154 },
             { id: 1, message: 'Hej', id_sender: 463 },
@@ -55,6 +59,7 @@ const loadConversations = ()=>{
       },
       {
         id: 152,
+        name: "Best Friend",
         messages: [
             { id: 0, message: 'Cześć!', id_sender: 154 },
             { id: 1, message: 'Hej', id_sender: 463 },
@@ -77,6 +82,7 @@ class App extends Component {
         //methods binding
         this.changeAutorizationStatus = this.changeAutorizationStatus.bind(this);
         this.getMessagesForConversation = this.getMessagesForConversation.bind(this);
+        this.getChatName = this.getChatName.bind(this);
     }
 
    changeAutorizationStatus = () => {
@@ -91,6 +97,13 @@ class App extends Component {
                 return this.state.conversations[i].messages;
         }
     };
+    
+    getChatName = (id)=>{
+        for (let i = 0; i < this.state.conversations.length; i++) {
+            if (this.state.conversations[i].id == id)
+                return this.state.conversations[i].name;
+        }
+    };
 
   render() {
     return (
@@ -102,6 +115,7 @@ class App extends Component {
                 <Switch className="bg-dark" style={{height: '100%'}}>
                     <Route path="/" 
                         render={()=><MainPage onConvarsationChange={this.getMessagesForConversation}
+                            getChatName={this.getChatName}
                         actualConversationID={this.state.conversations[0].id}/>} exact/>                    
                     <Route path="/logout" 
                         render={() => <LogoutPage changeAutorizationStatus={this.changeAutorizationStatus}/>} exact />
