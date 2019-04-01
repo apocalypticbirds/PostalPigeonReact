@@ -5,12 +5,15 @@ import Photo from '../assets/photo.png'
 import Send from '../assets/send.png'
 import File from '../assets/file.png'
 import '../styles/MainPage.scss'
+import {gql} from 'apollo-boost'
+import {graphql} from "react-apollo";
 
 
 class MainPage extends Component {
 
     constructor(props) {
         super(props);
+        const {conversation} = this.props.data;
         this.state = {
             groups: [
                 {id: 345, url: 'https://randomuser.me/api/portraits/med/women/21.jpg'},
@@ -21,14 +24,15 @@ class MainPage extends Component {
             ],
             nrOfGroups: 4,
             activeGroup: this.props.actualConversationID,
+            conversation: conversation,
             message: 'piszę do ',
             messages: this.props.onConvarsationChange(this.props.actualConversationID),
-            chatName: this.props.getChatName(this.props.actualConversationID)  
+            chatName: this.props.getChatName(this.props.actualConversationID)
 
         };
     }
 
-    handleSend(){
+    handleSend() {
         if (this.state.message) {
             this.setState(prevState => {
                 const id = prevState.messages[prevState.messages.length - 1] + 1;
@@ -43,7 +47,7 @@ class MainPage extends Component {
         }
     }
 
-    handleChangeInput(event){
+    handleChangeInput(event) {
         const {value} = event.target;
         this.setState({
             message: value
@@ -57,15 +61,24 @@ class MainPage extends Component {
         this.setState({
             activeGroup: id,
             messages: this.props.onConvarsationChange(id),
-            chatName: this.props.getChatName(id) 
+            chatName: this.props.getChatName(id)
         });
         console.log(`Active group: ${this.state.activeGroup}`);
     };
 
 
     render() {
-        const messagesList = this.state.messages.map(message =>
-            <div key={message.id}>{message.message}</div>);
+        const conversation = this.props.data.conversation;
+        console.log("conversation:");
+        console.log(conversation);
+        const messagesList = conversation ?
+            conversation.messages.map(message => <div key={message.id}>{message.content}</div>) : [];
+        {/* const messagesList = this.state.messages.map(message =>*/
+        }
+        {/*<div key={message.id}>{message.message}</div>);*/
+        }
+
+        console.log(messagesList);
 
         const groupsCompList =
             this.state.groups.map(chat =>
@@ -96,8 +109,10 @@ class MainPage extends Component {
                             </div>
 
                         </div>
-                        <div className='messages' id='mess' ref={(node) => { this.node = node; }}>
-                                {messagesList}
+                        <div className='messages' id='mess' ref={(node) => {
+                            this.node = node;
+                        }}>
+                            {messagesList}
                         </div>
 
                         <div className='send-form'>
@@ -118,8 +133,24 @@ class MainPage extends Component {
                     </div>
                 </div>
             </div>
-    )
+        )
     }
 }
 
-export default MainPage;
+const getConversation = gql`
+    {
+      conversation(id: "5ca1cfae1c9d440000b498b8"){
+        id
+        name
+        contributors {
+          id
+          nickname
+        }
+        messages {
+          id
+          content
+        }
+      }
+    }
+`;
+export default graphql(getConversation)(MainPage);
