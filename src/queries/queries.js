@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost'
+import {gql} from 'apollo-boost'
 
 export const getConversationGql = gql`
     {
@@ -24,3 +24,15 @@ export const sendMessageGql = gql`
       }
     }
 `;
+
+export const messageSubGql = gql`
+    subscription {
+      messageAdded(id_conversation: "5ca1cfae1c9d440000b498b8"){
+        id
+        content
+        sender{
+          nickname
+        }
+        date
+      }
+    }`;

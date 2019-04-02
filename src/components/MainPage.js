@@ -5,9 +5,8 @@ import Photo from '../assets/photo.png'
 import Send from '../assets/send.png'
 import File from '../assets/file.png'
 import '../styles/MainPage.scss'
-import {gql} from 'apollo-boost'
-import {compose, graphql} from "react-apollo";
-import {getConversationGql, sendMessageGql} from "../queries/queries";
+import {compose, graphql, Subscription} from "react-apollo";
+import {getConversationGql, messageSubGql, sendMessageGql} from "../queries/queries";
 
 
 class MainPage extends Component {
@@ -26,12 +25,29 @@ class MainPage extends Component {
             nrOfGroups: 4,
             activeGroup: this.props.actualConversationID,
             // conversation: conversation,
-            message: 'piszę do ',
+            message: '',
             messages: this.props.onConvarsationChange(this.props.actualConversationID),
             chatName: this.props.getChatName(this.props.actualConversationID)
 
         };
     }
+
+    // componentWillMount() {
+    //     this.props.data.subscribeToMore({
+    //         document: messageSubGql,
+    //         variables: {},
+    //         updateQuery: (prev, {subsctiptionData}) => {
+    //             if (!subsctiptionData) {
+    //                 return prev;
+    //             }
+    //
+    //             return {
+    //                 ...prev,
+    //                 messsages: [...prev.messages, subsctiptionData.messageAdded],
+    //             };
+    //         }
+    //     });
+    // }
 
     handleSend() {
         const message = this.state.message;
@@ -79,6 +95,7 @@ class MainPage extends Component {
 
 
     render() {
+        console.log(this.props);
         const conversationGql = this.props.getConversationGql;
         const messagesList =
             conversationGql.loading
@@ -142,6 +159,20 @@ class MainPage extends Component {
                         </div>
                     </div>
                     <div id='details'>
+                        <Subscription
+                            subscription={messageSubGql}>
+
+                            {({ response}) => (
+                                <h4>New comment
+                                {console.log("response")}
+                                {console.log(response)}
+
+                                </h4>
+
+                            )}
+
+
+                        </Subscription>
                         {/*DETAILS*/}
                         {/*{this.state.message}*/}
                     </div>
@@ -154,5 +185,6 @@ class MainPage extends Component {
 
 export default compose(
     graphql(getConversationGql, {name: 'getConversationGql'}),
-    graphql(sendMessageGql, {name: 'sendMessageGql'})
+    graphql(sendMessageGql, {name: 'sendMessageGql'}),
+    graphql(messageSubGql, {name: 'messageSubGql'}),
 )(MainPage);
