@@ -44,7 +44,8 @@ class MainPage extends Component {
                     content: message,
                     id_conv: fixedId_conv,
                     id_sender: fixedId_sender
-                }
+                },
+                refetchQueries: [{query: getConversationGql}]
             });
             this.setState(prevState => {
                 // const id = prevState.messages[prevState.messages.length - 1] + 1;
