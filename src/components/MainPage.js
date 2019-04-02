@@ -5,12 +5,16 @@ import Photo from '../assets/photo.png'
 import Send from '../assets/send.png'
 import File from '../assets/file.png'
 import '../styles/MainPage.scss'
+import {gql} from 'apollo-boost'
+import {compose, graphql} from "react-apollo";
+import {getConversationGql, sendMessageGql} from "../queries/queries";
 
 
 class MainPage extends Component {
 
     constructor(props) {
         super(props);
+        // const {conversation} = this.props.data.getConversationGql;
         this.state = {
             groups: [
                 {id: 345, url: 'https://randomuser.me/api/portraits/med/women/21.jpg'},
@@ -21,51 +25,74 @@ class MainPage extends Component {
             ],
             nrOfGroups: 4,
             activeGroup: this.props.actualConversationID,
+            // conversation: conversation,
             message: 'piszę do ',
             messages: this.props.onConvarsationChange(this.props.actualConversationID),
-            chatName: this.props.getChatName(this.props.actualConversationID)  
+            chatName: this.props.getChatName(this.props.actualConversationID)
 
         };
     }
 
-    handleSend(){
-        if (this.state.message) {
+    handleSend() {
+        const message = this.state.message;
+        if (message) {
+            const fixedId_conv = '5ca1cfae1c9d440000b498b8';
+            const fixedId_sender = '5ca2575ea5ceed5defdd67c2';
+
+            this.props.sendMessageGql({
+                variables: {
+                    content: message,
+                    id_conv: fixedId_conv,
+                    id_sender: fixedId_sender
+                },
+                refetchQueries: [{query: getConversationGql}]
+            });
             this.setState(prevState => {
-                const id = prevState.messages[prevState.messages.length - 1] + 1;
-                prevState.messages.push({
-                    id: id,
-                    message: prevState.message,
-                    id_sender: 154
-                });
+                // const id = prevState.messages[prevState.messages.length - 1] + 1;
+                // prevState.messages.push({
+                //     id: id,
+                //     message: prevState.message,
+                //     id_sender: 154
+                // });
                 prevState.message = '';
                 return prevState
             });
         }
     }
 
-    handleChangeInput(event){
+    handleChangeInput(event) {
         const {value} = event.target;
         this.setState({
             message: value
         });
-
     }
-
 
     groupChanged = (id) => {
         console.log("Group changed");
         this.setState({
             activeGroup: id,
             messages: this.props.onConvarsationChange(id),
-            chatName: this.props.getChatName(id) 
+            chatName: this.props.getChatName(id)
         });
         console.log(`Active group: ${this.state.activeGroup}`);
     };
 
 
     render() {
-        const messagesList = this.state.messages.map(message =>
-            <div key={message.id}>{message.message}</div>);
+        const conversationGql = this.props.getConversationGql;
+        const messagesList =
+            conversationGql.loading
+                ? []
+                : conversationGql.conversation.messages.map(message => <div key={message.id}>{message.content}</div>);
+
+        {/* const messagesList = this.state.messages.map(message =>*/
+        }
+        {/*<div key={message.id}>{message.message}</div>);*/
+        }
+
+        // console.log(messagesList);
+
+        // console.log(this.props.getConversationGql);
 
         const groupsCompList =
             this.state.groups.map(chat =>
@@ -96,8 +123,10 @@ class MainPage extends Component {
                             </div>
 
                         </div>
-                        <div className='messages' id='mess' ref={(node) => { this.node = node; }}>
-                                {messagesList}
+                        <div className='messages' id='mess' ref={(node) => {
+                            this.node = node;
+                        }}>
+                            {messagesList}
                         </div>
 
                         <div className='send-form'>
@@ -118,8 +147,12 @@ class MainPage extends Component {
                     </div>
                 </div>
             </div>
-    )
+        )
     }
 }
 
-export default MainPage;
+
+export default compose(
+    graphql(getConversationGql, {name: 'getConversationGql'}),
+    graphql(sendMessageGql, {name: 'sendMessageGql'})
+)(MainPage);
