@@ -1,3 +1,7 @@
+### Start front-end
+open project directory in terminal and call next command:
+`npm start`
+
 ### Front-end Logs
  Created Project in React.js
 
@@ -29,6 +33,16 @@
 
  In App.js added props and callback for test data edit. Child components get props and use it.
 
+Sprint 3 ######################################
+ Appolo library added to project.
+ This lib responsible for connection to backend.
+ It has advantages like user`s cache using. It give us possibility to accumulate data by users side and load data
+ from server once. Or for example collect data when user has not internet.
+
+Appolo implemented for message sending 
+
+Appolo implemented for conversation getting 
+
  ### Back-End Logs
 Created new repo for backend
 
@@ -47,3 +61,15 @@ Added chai and mocha libs for test`s purpuses
 Travis CI for automated tests
 
 Endpoints implemented
+
+Sprint 3###########################
+Database structure rebuilt (optimization purposes)
+
+Conversation creating functionality added to server
+
+Message creating functionality added to server
+
+Created functionality for getting messages from the server
+
+Created functionality for getting conversation from the server
+
