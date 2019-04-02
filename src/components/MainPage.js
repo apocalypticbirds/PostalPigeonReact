@@ -6,14 +6,15 @@ import Send from '../assets/send.png'
 import File from '../assets/file.png'
 import '../styles/MainPage.scss'
 import {gql} from 'apollo-boost'
-import {graphql} from "react-apollo";
+import {compose, graphql} from "react-apollo";
+import {getConversationGql, sendMessageGql} from "../queries/queries";
 
 
 class MainPage extends Component {
 
     constructor(props) {
         super(props);
-        const {conversation} = this.props.data;
+        // const {conversation} = this.props.data.getConversationGql;
         this.state = {
             groups: [
                 {id: 345, url: 'https://randomuser.me/api/portraits/med/women/21.jpg'},
@@ -24,7 +25,7 @@ class MainPage extends Component {
             ],
             nrOfGroups: 4,
             activeGroup: this.props.actualConversationID,
-            conversation: conversation,
+            // conversation: conversation,
             message: 'piszę do ',
             messages: this.props.onConvarsationChange(this.props.actualConversationID),
             chatName: this.props.getChatName(this.props.actualConversationID)
@@ -33,14 +34,25 @@ class MainPage extends Component {
     }
 
     handleSend() {
-        if (this.state.message) {
+        const message = this.state.message;
+        if (message) {
+            const fixedId_conv = '5ca1cfae1c9d440000b498b8';
+            const fixedId_sender = '5ca2575ea5ceed5defdd67c2';
+
+            this.props.sendMessageGql({
+                variables: {
+                    content: message,
+                    id_conv: fixedId_conv,
+                    id_sender: fixedId_sender
+                }
+            });
             this.setState(prevState => {
-                const id = prevState.messages[prevState.messages.length - 1] + 1;
-                prevState.messages.push({
-                    id: id,
-                    message: prevState.message,
-                    id_sender: 154
-                });
+                // const id = prevState.messages[prevState.messages.length - 1] + 1;
+                // prevState.messages.push({
+                //     id: id,
+                //     message: prevState.message,
+                //     id_sender: 154
+                // });
                 prevState.message = '';
                 return prevState
             });
@@ -52,9 +64,7 @@ class MainPage extends Component {
         this.setState({
             message: value
         });
-
     }
-
 
     groupChanged = (id) => {
         console.log("Group changed");
@@ -68,17 +78,20 @@ class MainPage extends Component {
 
 
     render() {
-        const conversation = this.props.data.conversation;
-        console.log("conversation:");
-        console.log(conversation);
-        const messagesList = conversation ?
-            conversation.messages.map(message => <div key={message.id}>{message.content}</div>) : [];
+        const conversationGql = this.props.getConversationGql;
+        const messagesList =
+            conversationGql.loading
+                ? []
+                : conversationGql.conversation.messages.map(message => <div key={message.id}>{message.content}</div>);
+
         {/* const messagesList = this.state.messages.map(message =>*/
         }
         {/*<div key={message.id}>{message.message}</div>);*/
         }
 
-        console.log(messagesList);
+        // console.log(messagesList);
+
+        // console.log(this.props.getConversationGql);
 
         const groupsCompList =
             this.state.groups.map(chat =>
@@ -137,20 +150,8 @@ class MainPage extends Component {
     }
 }
 
-const getConversation = gql`
-    {
-      conversation(id: "5ca1cfae1c9d440000b498b8"){
-        id
-        name
-        contributors {
-          id
-          nickname
-        }
-        messages {
-          id
-          content
-        }
-      }
-    }
-`;
-export default graphql(getConversation)(MainPage);
+
+export default compose(
+    graphql(getConversationGql, {name: 'getConversationGql'}),
+    graphql(sendMessageGql, {name: 'sendMessageGql'})
+)(MainPage);
