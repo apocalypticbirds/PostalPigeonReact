@@ -12,6 +12,10 @@ export const getConversationGql = gql`
         messages {
           id
           content
+          sender{
+            id
+          }
+          date
         }
       }
     }
