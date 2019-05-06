@@ -5,10 +5,8 @@ import Photo from '../assets/photo.png'
 import Send from '../assets/send.png'
 import File from '../assets/file.png'
 import '../styles/MainPage.scss'
-import {gql} from 'apollo-boost'
-import {compose, graphql} from "react-apollo";
-import {getConversationGql, sendMessageGql} from "../queries/queries";
-
+import {compose, graphql, Query} from "react-apollo";
+import {getConversationGql, getMe, sendMessageGql} from "../queries/queries";
 
 class MainPage extends Component {
 
@@ -23,42 +21,16 @@ class MainPage extends Component {
                 {id: 153, url: 'https://randomuser.me/api/portraits/med/women/96.jpg'},
                 {id: 152, url: 'https://randomuser.me/api/portraits/med/women/79.jpg'}
             ],
-            nrOfGroups: 4,
-            activeGroup: this.props.actualConversationID,
+            id_user: "5ca1c9a11c9d4400003e3590",
+            idActiveConversation: 0,
             // conversation: conversation,
-            message: 'piszę do ',
-            messages: this.props.onConvarsationChange(this.props.actualConversationID),
-            chatName: this.props.getChatName(this.props.actualConversationID)
+            message: '',
+            // messages: this.props.onConvarsationChange(this.state.idActiveConversation),
+            // chatName: this.props.getChatName(this.state.idActiveConversation)
 
         };
     }
 
-    handleSend() {
-        const message = this.state.message;
-        if (message) {
-            const fixedId_conv = '5ca1cfae1c9d440000b498b8';
-            const fixedId_sender = '5ca2575ea5ceed5defdd67c2';
-
-            this.props.sendMessageGql({
-                variables: {
-                    content: message,
-                    id_conv: fixedId_conv,
-                    id_sender: fixedId_sender
-                },
-                refetchQueries: [{query: getConversationGql}]
-            });
-            this.setState(prevState => {
-                // const id = prevState.messages[prevState.messages.length - 1] + 1;
-                // prevState.messages.push({
-                //     id: id,
-                //     message: prevState.message,
-                //     id_sender: 154
-                // });
-                prevState.message = '';
-                return prevState
-            });
-        }
-    }
 
     handleChangeInput(event) {
         const {value} = event.target;
@@ -70,39 +42,79 @@ class MainPage extends Component {
     groupChanged = (id) => {
         console.log("Group changed");
         this.setState({
-            activeGroup: id,
-            messages: this.props.onConvarsationChange(id),
-            chatName: this.props.getChatName(id)
+            idActiveConversation: id,
         });
-        console.log(`Active group: ${this.state.activeGroup}`);
+        console.log(`Active group: ${this.state.idActiveConversation}`);
     };
+
+    handleSend() {
+        const message = this.state.message;
+        if (message) {
+            const id_conv = this.state.idActiveConversation;
+            const id_sender = this.state.id_user;
+
+            this.props.sendMessageGql({
+                variables: {
+                    content: message,
+                    id_conv: id_conv,
+                    id_sender: id_sender
+                }
+            });
+            this.setState(prevState => {
+                prevState.message = '';
+                return prevState
+            });
+        }
+    }
+
+    getGroups() {
+        const id_user = this.state.id_user;
+        return <Query query={getMe} variables={{id_user}}>
+            {({loading, error, data}) => {
+                if (loading) return `Loading...`;
+                if (error) return `Error! ${error}`;
+
+                return data.me.conversations.map((conv, index) =>
+                    <ChatGroup
+                        key={index}
+                        id={conv.id}
+                        url={conv.avatarUrl}
+                        handleClick={this.groupChanged}
+                        active={conv.id === this.state.idActiveConversation}/>);
+            }}
+        </Query>
+    };
+
+    getMessages() {
+        const activeConversation = this.state.idActiveConversation;
+        if (activeConversation !== 0) {
+            return (<Query query={getConversationGql} variables={{activeConversation}}>
+                {({loading, error, data}) => {
+                    if (loading) return 'Loading...';
+                    if (error) return `Error! ${error}`;
+                    console.log("data");
+                    console.log(data);
+                    return data.conversation.messages.map(message =>
+                        <div key={message.id}>
+                            {message.content}
+                        </div>);
+                }}
+            </Query>)
+        } else {
+            return "No conversation"
+        }
+    }
 
 
     render() {
+        console.log(this.props);
         const conversationGql = this.props.getConversationGql;
-        const messagesList =
-            conversationGql.loading
-                ? []
-                : conversationGql.conversation.messages.map(message => <div key={message.id}>{message.content}</div>);
+        const messagesList = this.getMessages();
 
-        {/* const messagesList = this.state.messages.map(message =>*/
-        }
-        {/*<div key={message.id}>{message.message}</div>);*/
-        }
+        console.log("conversationGql");
+        console.log(conversationGql);
 
-        // console.log(messagesList);
-
-        // console.log(this.props.getConversationGql);
-
-        const groupsCompList =
-            this.state.groups.map(chat =>
-                <ChatGroup
-                    key={chat.id}
-                    id={chat.id}
-                    url={chat.url}
-                    handleClick={this.groupChanged}
-                    active={chat.id === this.state.activeGroup}/>);
-
+        const groupsCompList = this.getGroups();
         return (
             <div id='chat-body'
                  style={{backgroundImage: `url(${bgPic})`}}>
@@ -110,6 +122,7 @@ class MainPage extends Component {
                     <div id='groups'>
                         {/*<ChatGroup url={TLogo} />*/}
                         {groupsCompList}
+
 
                     </div>
                     <div id='chat'>
@@ -153,6 +166,6 @@ class MainPage extends Component {
 
 
 export default compose(
-    graphql(getConversationGql, {name: 'getConversationGql'}),
-    graphql(sendMessageGql, {name: 'sendMessageGql'})
+    // graphql(getConversationGql, {name: 'getConversationGql'}),
+    graphql(sendMessageGql, {name: 'sendMessageGql'}),
 )(MainPage);
