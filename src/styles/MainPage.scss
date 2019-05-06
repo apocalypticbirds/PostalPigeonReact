@@ -65,28 +65,23 @@
       overflow-y: scroll;
       height: 700px;
 
-      div{
-        display: inline;
-        border-radius: 2%;
-        padding: 4px;
-        background-color: #00bc8c;
-        float: left;
-        clear: right;
-        margin: 3px;
-        &:nth-child(2n){
-          background-color: #00cec9;
-          float: right;
-          clear: left;
-        }
-      }
-
-      //div:nth-child(2n +1){
-      //  display: inline;
-      //  border-radius: 30%;
-      //  background-color: #00efb2;
-      //  float: right;
-      //  clear: left;
-      //}
+    //  div{
+    //    display: inline;
+    //    border-radius: 2%;
+    //    padding: 4px;
+    //    background-color: #00bc8c;
+    //    float: left;
+    //    clear: right;
+    //    margin: 3px;
+    //  }
+    //
+    //  //div:nth-child(2n +1){
+    //  //  display: inline;
+    //  //  border-radius: 30%;
+    //  //  background-color: #00efb2;
+    //  //  float: right;
+    //  //  clear: left;
+    //  //}
     }
 
     .send-form {
