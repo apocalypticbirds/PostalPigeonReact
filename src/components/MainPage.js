@@ -7,6 +7,7 @@ import File from '../assets/file.png'
 import '../styles/MainPage.scss'
 import {compose, graphql, Query} from "react-apollo";
 import {getConversationGql, getMe, sendMessageGql} from "../queries/queries";
+import Message from "./Message";
 
 class MainPage extends Component {
 
@@ -94,10 +95,14 @@ class MainPage extends Component {
                     if (error) return `Error! ${error}`;
                     console.log("data");
                     console.log(data);
-                    return data.conversation.messages.map(message =>
-                        <div key={message.id}>
-                            {message.content}
-                        </div>);
+                    return data.conversation.messages.map((message, index) =>
+                        <Message
+                            key={index}
+                            id={message.id}
+                            sender={message.sender.id}
+                            message={message.content}
+                            isActive={message.sender.id === this.state.id_user}>
+                        </Message>);
                 }}
             </Query>)
         } else {
