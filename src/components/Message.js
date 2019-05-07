@@ -3,6 +3,16 @@ import styled from 'styled-components'
 
 
 const MyMessage = styled.div`
+        .date {
+            font-size: 7px;
+            color: gray;
+        }
+        .tag {
+            display: inline;
+            font-size: 10px;
+            font-style: italic;
+            color: gray;
+        }
         display: inline;
         border-radius: 10px;
         padding: 4px;
@@ -12,6 +22,16 @@ const MyMessage = styled.div`
         clear: both;
         max-width: 70%;`;
 const FriendMessage = styled.div`
+        .date {
+            font-size: 7px;
+            color: gray;
+        }
+        .tag {
+            display: inline;
+            font-size: 10px;
+            font-style: italic;
+            color: gray;
+        }
         display: inline;
         border-radius: 10px;
         padding: 4px;
@@ -22,17 +42,22 @@ const FriendMessage = styled.div`
         max-width: 70%;`;
 
 function Message(props) {
-
+    const dt = new Date(props.model.date);
+    const dateStr = `${dt.getHours()}:${dt.getMinutes()} ${dt.getDay()}-${dt.getMonth()}-${dt.getFullYear()}`;
     return props.isActive
         ? <MyMessage
             // onMouseOver={() => props.handleOver(props.id)}
         >
-            {props.message}
+            <div className={"date"}>{dateStr}</div>
+            <div className={"content"}>{props.model.content}</div>
+            {props.model.tags ? props.model.tags.map(tag => <div className={"tag"}>{`#${tag} `}</div>) : []}
         </MyMessage>
         : <FriendMessage
             // onMouseOver={() => props.handleOver(props.id)}
         >
-            {props.message}
+            <div className={"date"}>{dateStr}</div>
+            <div className={"content"}>{props.model.content}</div>
+            {props.model.tags ? props.model.tags.map(tag => <div className={"tag"}>{`#${tag}`}</div>) : []}
         </FriendMessage>
 }
 

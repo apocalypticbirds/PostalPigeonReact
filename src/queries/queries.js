@@ -16,6 +16,7 @@ export const getConversationGql = gql`
             id
           }
           date
+          tags
         }
       }
     }

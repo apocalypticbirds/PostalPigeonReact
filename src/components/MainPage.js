@@ -109,9 +109,7 @@ class MainPage extends Component {
                     return data.conversation.messages.map((message, index) =>
                         <Message
                             key={index}
-                            id={message.id}
-                            sender={message.sender.id}
-                            message={message.content}
+                            model={message}
                             isActive={message.sender.id === this.props.userId}>
                         </Message>);
                 }}
