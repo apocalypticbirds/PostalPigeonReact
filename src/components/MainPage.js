@@ -8,6 +8,7 @@ import '../styles/MainPage.scss'
 import {compose, graphql, Query} from "react-apollo";
 import {getConversationGql, getMe, sendMessageGql} from "../queries/queries";
 import Message from "./Message";
+const POOL = 1000;
 
 class MainPage extends Component {
 
@@ -29,6 +30,18 @@ class MainPage extends Component {
             // chatName: this.props.getChatName(this.state.idActiveConversation)
 
         };
+    }
+
+    componentDidMount() {
+        this.interval = setInterval(() => {
+            this.setState({ state: this.state });
+            this.forceUpdate();
+            // alert("TIMEOUT")
+        }, 5000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
     }
 
 
@@ -87,7 +100,7 @@ class MainPage extends Component {
     getMessages() {
         const activeConversation = this.state.idActiveConversation;
         if (activeConversation !== 0) {
-            return (<Query query={getConversationGql} variables={{activeConversation}}>
+            return (<Query query={getConversationGql} variables={{activeConversation}} pollInterval={POOL}>
                 {({loading, error, data}) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error}`;
@@ -108,11 +121,10 @@ class MainPage extends Component {
         }
     }
 
-
     render() {
         console.log(this.props);
         const conversationGql = this.props.getConversationGql;
-        const messagesList = this.getMessages();
+        const messagesList = this.state.idActiveConversation ? this.getMessages() : [];
 
         console.log("conversationGql");
         console.log(conversationGql);
