@@ -48,6 +48,7 @@ class App extends Component {
     render() {
         return (
             <BrowserRouter style={{height: "100%"}}>
+                {console.log(`User id by App.js = ${this.state.userId}`)}
                 <div style={{height: "100%"}}>
                     <Navigation autorizationStatus={this.state.isSignIn}/>
                     <Switch className="bg-dark" style={{height: "100%"}}>
@@ -55,7 +56,7 @@ class App extends Component {
                             path="/"
                             render={() =>
                                 this.state.isSignIn ? (
-                                    <MainPage isSignIn={this.state.isSignIn}/>
+                                    <MainPage isSignIn={this.state.isSignIn} userId={this.state.userId}/>
                                 ) : (
                                     <Redirect to="/login"/>
                                 )
