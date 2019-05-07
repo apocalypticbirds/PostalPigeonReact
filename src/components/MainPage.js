@@ -22,7 +22,7 @@ class MainPage extends Component {
                 {id: 153, url: 'https://randomuser.me/api/portraits/med/women/96.jpg'},
                 {id: 152, url: 'https://randomuser.me/api/portraits/med/women/79.jpg'}
             ],
-            id_user: "5ca1c9a11c9d4400003e3590",
+            id_user: "5ca1ca3c1c9d4400003e3593",
             idActiveConversation: 0,
             // conversation: conversation,
             message: '',
@@ -70,7 +70,7 @@ class MainPage extends Component {
 
     getGroups() {
         const id_user = this.state.id_user;
-        return <Query query={getMe} variables={{id_user}}>
+        return <Query query={getMe}>
             {({loading, error, data}) => {
                 if (loading) return `Loading...`;
                 if (error) return `Error! ${error}`;
