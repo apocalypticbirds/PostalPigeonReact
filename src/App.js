@@ -67,6 +67,9 @@ class App extends Component {
                             path="/logout"
                             render={() => (
                                 <LogoutPage
+                                    changeToken={this.changeToken}
+                                    changeUserId={this.changeUserId}
+                                    changeTokenExpiration={this.changeTokenExpiration}
                                     changeAutorizationStatus={this.changeAutorizationStatus}
                                 />
                             )}

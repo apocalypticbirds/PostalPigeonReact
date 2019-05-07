@@ -43,6 +43,12 @@ Appolo implemented for message sending
 
 Appolo implemented for conversation getting 
 
+Sprint 5 ######################################
+Login page added
+Catching token userid and time for token
+Blocked access for not autorized users
+Sending and catching messages to/from server
+
  ### Back-End Logs
 Created new repo for backend
 
@@ -72,4 +78,30 @@ Message creating functionality added to server
 Created functionality for getting messages from the server
 
 Created functionality for getting conversation from the server
+
+Sprint 5############################
+Authentification added by server side
+tokens generate and send to client
+
+Bot added, it filtering bad words and catch tags in text
+
+Server can't be tested now from graphiql. Postman is required.
+Postman request example:
+Type: POST
+URL: http://localhost:4000/graphql
+Headers:
+    Key:Content-type
+    value:application/json
+
+    Key: Authorization
+    value: Bearer <Valid token>
+
+Body:
+{
+	"query": "query {login(email:\"bartek@gmail.com\", password:\"passw0rd\") {token}}"
+}
+
+{
+	"query": "query {conversations {id, name}}"
+}
 

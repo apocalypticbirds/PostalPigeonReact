@@ -6,9 +6,6 @@ class LogoutPage extends Component {
     constructor(props){
         super(props);
         this.props.changeAutorizationStatus();
-        this.props.changeToken('');
-        this.props.changeUserId('');
-        this.props.changeTokenExpiration('');
     }
 
     render() {
