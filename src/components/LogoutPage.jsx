@@ -1,5 +1,6 @@
 import React, {Component} from "react"
 import {Container, MiddleBox} from "./LoginPage-styles"
+
 class LogoutPage extends Component {
 
     constructor(props){
@@ -9,6 +10,7 @@ class LogoutPage extends Component {
         this.props.changeUserId('');
         this.props.changeTokenExpiration('');
     }
+
     render() {
         return (
           <Container>

@@ -1,8 +1,8 @@
-import { gql } from 'apollo-boost'
+import {gql} from 'apollo-boost'
 
 export const getConversationGql = gql`
-    {
-      conversation(id: "5ca1cfae1c9d440000b498b8"){
+    query getConversation($activeConversation: ID!){
+      conversation(id: $activeConversation){
         id
         name
         contributors {
@@ -12,15 +12,36 @@ export const getConversationGql = gql`
         messages {
           id
           content
+          sender{
+            id
+          }
+          date
+          tags
         }
       }
     }
 `;
 
 export const sendMessageGql = gql`
-    mutation ($content:String!,$id_conv:String!,$id_sender:String!){
-      sendMessage(content: $content, id_conversation: $id_conv, id_sender: $id_sender) {
-        id
-      }
+    mutation send($id_conv: ID!, $content: String!) {
+        addMessage(id_conversation: $id_conv, content: $content) {
+            id
+            content
+        }
+    }
+
+`;
+
+export const getMe = gql`
+    query {
+        me { 
+            id 
+            nickname 
+            conversations{ 
+                id 
+                name 
+                avatarUrl
+            }
+        }
     }
 `;
