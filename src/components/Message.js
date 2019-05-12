@@ -46,14 +46,14 @@ function Message(props) {
     const dateStr = `${dt.getHours()}:${dt.getMinutes()} ${dt.getDay()}-${dt.getMonth()}-${dt.getFullYear()}`;
     return props.isActive
         ? <MyMessage
-            // onMouseOver={() => props.handleOver(props.id)}
+        // onMouseOver={() => props.handleOver(props.id)}
         >
             <div className={"date"}>{dateStr}</div>
             <div className={"content"}>{props.model.content}</div>
             {props.model.tags ? props.model.tags.map(tag => <div className={"tag"}>{`#${tag} `}</div>) : []}
         </MyMessage>
         : <FriendMessage
-            // onMouseOver={() => props.handleOver(props.id)}
+        // onMouseOver={() => props.handleOver(props.id)}
         >
             <div className={"date"}>{dateStr}</div>
             <div className={"content"}>{props.model.content}</div>

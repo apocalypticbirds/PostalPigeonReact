@@ -6,8 +6,11 @@ import Send from '../assets/send.png'
 import File from '../assets/file.png'
 import '../styles/MainPage.scss'
 import {compose, graphql, Query} from "react-apollo";
-import {getConversationGql, getMe, sendMessageGql} from "../queries/queries";
+import {ADD_CONVERSATION, getConversationGql, getMe, sendMessageGql} from "../queries/queries";
 import Message from "./Message";
+import Details from "./Details";
+import TLogo from '../assets/TLogo_cut.png'
+
 const POOL = 1000;
 
 class MainPage extends Component {
@@ -16,13 +19,7 @@ class MainPage extends Component {
         super(props);
         // const {conversation} = this.props.data.getConversationGql;
         this.state = {
-            groups: [
-                {id: 345, url: 'https://randomuser.me/api/portraits/med/women/21.jpg'},
-                {id: 243, url: 'https://randomuser.me/api/portraits/med/men/56.jpg'},
-                {id: 834, url: 'https://randomuser.me/api/portraits/med/men/47.jpg'},
-                {id: 153, url: 'https://randomuser.me/api/portraits/med/women/96.jpg'},
-                {id: 152, url: 'https://randomuser.me/api/portraits/med/women/79.jpg'}
-            ],
+            groups: [],
             idActiveConversation: 0,
             // conversation: conversation,
             message: '',
@@ -34,7 +31,7 @@ class MainPage extends Component {
 
     componentDidMount() {
         this.interval = setInterval(() => {
-            this.setState({ state: this.state });
+            this.setState({state: this.state});
             this.forceUpdate();
             // alert("TIMEOUT")
         }, 5000);
@@ -80,8 +77,17 @@ class MainPage extends Component {
         }
     }
 
+    onAddConversation = () => {
+        this.props.addConversation({
+            variables: {
+                conv_name: 'NewConversation',
+            }
+        });
+        return 'xd'
+    };
+
     getGroups() {
-        return <Query query={getMe}>
+        return <Query query={getMe} pollInterval={POOL}>
             {({loading, error, data}) => {
                 if (loading) return `Loading...`;
                 if (error) return `Error! ${error}`;
@@ -120,6 +126,10 @@ class MainPage extends Component {
     }
 
     render() {
+        const {
+            idActiveConversation,
+            groups
+        } = this.state;
         console.log(this.props);
         const conversationGql = this.props.getConversationGql;
         const messagesList = this.state.idActiveConversation ? this.getMessages() : [];
@@ -133,7 +143,7 @@ class MainPage extends Component {
                  style={{backgroundImage: `url(${bgPic})`}}>
                 <div className='main-container'>
                     <div id='groups'>
-                        {/*<ChatGroup url={TLogo} />*/}
+                        <ChatGroup id={'0'} url={"https://primephotosevents.com/static/img/icon-plus-circled.svg"} handleClick={this.onAddConversation}/>
                         {groupsCompList}
 
 
@@ -167,10 +177,12 @@ class MainPage extends Component {
                                  onClick={() => this.handleSend()}/>
                         </div>
                     </div>
-                    <div id='details'>
+                    <Details idActiveConv={idActiveConversation}/>
+                    {/*<div id='details'>*/}
+                    {/*    <div>{groups[idActiveConversation] ? groups[idActiveConversation].name : ""}</div>*/}
                         {/*DETAILS*/}
                         {/*{this.state.message}*/}
-                    </div>
+                    {/*</div>*/}
                 </div>
             </div>
         )
@@ -181,4 +193,6 @@ class MainPage extends Component {
 export default compose(
     // graphql(getConversationGql, {name: 'getConversationGql'}),
     graphql(sendMessageGql, {name: 'sendMessageGql'}),
+    graphql(getConversationGql, {name: 'getConversationGql'}),
+    graphql(ADD_CONVERSATION, {name: 'addConversation'})
 )(MainPage);
