@@ -1,12 +1,13 @@
-import React, {Component} from "react"
+import React, { Component } from "react"
 import ChatGroup from './ChatGroup'
+import Messages from './Messages'
 import bgPic from "../assets/mntnFHD_compressed_cut.jpeg";
 import Photo from '../assets/photo.png'
 import Send from '../assets/send.png'
 import File from '../assets/file.png'
 import '../styles/MainPage.scss'
-import {compose, graphql, Query} from "react-apollo";
-import {ADD_CONVERSATION, getConversationGql, getMe, sendMessageGql} from "../queries/queries";
+import { compose, graphql, Query } from "react-apollo";
+import { ADD_CONVERSATION, getConversationGql, getMe, sendMessageGql } from "../queries/queries";
 import Message from "./Message";
 import Details from "./Details";
 import TLogo from '../assets/TLogo_cut.png'
@@ -31,7 +32,7 @@ class MainPage extends Component {
 
     componentDidMount() {
         this.interval = setInterval(() => {
-            this.setState({state: this.state});
+            this.setState({ state: this.state });
             this.forceUpdate();
             // alert("TIMEOUT")
         }, 5000);
@@ -43,7 +44,7 @@ class MainPage extends Component {
 
 
     handleChangeInput(event) {
-        const {value} = event.target;
+        const { value } = event.target;
         this.setState({
             message: value
         });
@@ -88,7 +89,7 @@ class MainPage extends Component {
 
     getGroups() {
         return <Query query={getMe} pollInterval={POOL}>
-            {({loading, error, data}) => {
+            {({ loading, error, data }) => {
                 if (loading) return `Loading...`;
                 if (error) return `Error! ${error}`;
 
@@ -98,7 +99,7 @@ class MainPage extends Component {
                         id={conv.id}
                         url={conv.avatarUrl}
                         handleClick={this.groupChanged}
-                        active={conv.id === this.state.idActiveConversation}/>);
+                        active={conv.id === this.state.idActiveConversation} />);
             }}
         </Query>
     };
@@ -106,8 +107,8 @@ class MainPage extends Component {
     getMessages() {
         const activeConversation = this.state.idActiveConversation;
         if (activeConversation !== 0) {
-            return (<Query query={getConversationGql} variables={{activeConversation}} pollInterval={POOL}>
-                {({loading, error, data}) => {
+            return (<Query query={getConversationGql} variables={{ activeConversation }} pollInterval={POOL}>
+                {({ loading, error, data }) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error}`;
                     console.log("data");
@@ -140,10 +141,10 @@ class MainPage extends Component {
         const groupsCompList = this.getGroups();
         return (
             <div id='chat-body'
-                 style={{backgroundImage: `url(${bgPic})`}}>
+                style={{ backgroundImage: `url(${bgPic})` }}>
                 <div className='main-container'>
                     <div id='groups'>
-                        <ChatGroup id={'0'} url={"https://primephotosevents.com/static/img/icon-plus-circled.svg"} handleClick={this.onAddConversation}/>
+                        <ChatGroup id={'0'} url={"https://primephotosevents.com/static/img/icon-plus-circled.svg"} handleClick={this.onAddConversation} />
                         {groupsCompList}
 
 
@@ -159,29 +160,33 @@ class MainPage extends Component {
                             </div>
 
                         </div>
-                        <div className='messages' id='mess' ref={(node) => {
+
+                        {/* <div className='messages' id='mess' 
+                        ref={(node) => {
                             this.node = node;
-                        }}>
+                        }}
+                        >
                             {messagesList}
-                        </div>
+                        </div> */}
+                        <Messages userId={this.props.userId} idConv={this.state.idActiveConversation}></Messages>
 
                         <div className='send-form'>
                             <input
                                 value={this.state.message}
                                 type='text'
                                 onChange={event => this.handleChangeInput(event)}
-                                className='form-control'/>
-                            <img src={Photo} alt='uploadPh'/>
-                            <img src={File} alt='file'/>
+                                className='form-control' />
+                            <img src={Photo} alt='uploadPh' />
+                            <img src={File} alt='file' />
                             <img src={Send} alt='send'
-                                 onClick={() => this.handleSend()}/>
+                                onClick={() => this.handleSend()} />
                         </div>
                     </div>
-                    <Details idActiveConv={idActiveConversation}/>
+                    <Details idActiveConv={idActiveConversation} />
                     {/*<div id='details'>*/}
                     {/*    <div>{groups[idActiveConversation] ? groups[idActiveConversation].name : ""}</div>*/}
-                        {/*DETAILS*/}
-                        {/*{this.state.message}*/}
+                    {/*DETAILS*/}
+                    {/*{this.state.message}*/}
                     {/*</div>*/}
                 </div>
             </div>
@@ -192,7 +197,7 @@ class MainPage extends Component {
 
 export default compose(
     // graphql(getConversationGql, {name: 'getConversationGql'}),
-    graphql(sendMessageGql, {name: 'sendMessageGql'}),
-    graphql(getConversationGql, {name: 'getConversationGql'}),
-    graphql(ADD_CONVERSATION, {name: 'addConversation'})
+    graphql(sendMessageGql, { name: 'sendMessageGql' }),
+    graphql(getConversationGql, { name: 'getConversationGql' }),
+    graphql(ADD_CONVERSATION, { name: 'addConversation' })
 )(MainPage);

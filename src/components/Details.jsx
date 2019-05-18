@@ -50,7 +50,7 @@ class Details extends Component {
             <div id={'details'} className={"details"}>
                 {console.log("Details: this.props")}
                 {console.log(this.props)}
-                <img src={avatarUrl} height="100px" width="100px"/>
+                {/* <img src={avatarUrl} height="100px" width="100px"/> */}
                 <div><h3 align={"center"}>{convName}</h3></div>
                 <div>{contribView}</div>
                 <button onClick={() => this.onAddUser()}>➕</button>
