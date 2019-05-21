@@ -7,6 +7,7 @@ import NotFound from "./components/NotFound";
 import LogoutPage from "./components/LogoutPage.jsx";
 import LoginPage from "./components/LoginPage.jsx";
 import MainPage from "./components/MainPage";
+import RegistrationPage from "./components/RegistrationPage";
 
 class App extends Component {
     constructor(props) {
@@ -92,6 +93,8 @@ class App extends Component {
                             }
                             exact
                         />
+                        <Route path="/registration"
+                            render={() => !this.state.isSignIn ? <RegistrationPage /> : <Redirect to="/" />} exact/>
                         <Route component={NotFound}/>
                     </Switch>
                 </div>
