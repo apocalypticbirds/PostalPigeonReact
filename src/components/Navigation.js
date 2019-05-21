@@ -34,10 +34,14 @@ class Navigation extends Component {
                                 <NavLink to="/settings" className="nav-link">Settings</NavLink>
                             </li>
                             <li className="navbar-item">
-                            {this.props.autorizationStatus &&                                                                
-                                <NavLink to="/logout" className="nav-link">Logout</NavLink>}
-                            {!this.props.autorizationStatus && 
-                                <NavLink to="/login" className="nav-link">Log in</NavLink>}
+                                {this.props.autorizationStatus &&                                                                
+                                    <NavLink to="/logout" className="nav-link">Logout</NavLink>}
+                                {!this.props.autorizationStatus && 
+                                    <NavLink to="/login" className="nav-link">Log in</NavLink>}
+                            </li>
+                            <li className="navbar-item">
+                                {!this.props.autorizationStatus &&                                                                
+                                    <NavLink to="/registration" className="nav-link">Sing Up</NavLink>}
                             </li>
                         </ul>
                     </div>
