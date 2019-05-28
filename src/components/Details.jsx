@@ -1,5 +1,7 @@
 import React, {Component} from "react"
-import {ADD_USER_TO_CONV, getConversationGql} from "../queries/queries";
+import {ADD_USER_TO_CONV, getConversationGql,
+    leaveConversationGql
+} from "../queries/queries";
 import {graphql} from "react-apollo";
 import {compose} from "react-apollo";
 import '../styles/Details.scss'
@@ -39,10 +41,19 @@ class Details extends Component {
         });
     }
 
+    leaveConversation = () => {
+        this.props.leaveConv({
+            variables: {
+                id_conv: this.props.idActiveConv
+            }
+        });
+    }
+
     render() {
         const avatarUrl = this.props.data.conversation ? this.props.data.conversation.avatarUrl : DEFAULT_CONV_IMAGE;
         const convName = this.props.data.conversation ? this.props.data.conversation.name : '';
         const contributors = this.props.data.conversation ? this.props.data.conversation.contributors : [];
+        console.log("CONTRIBUTORS:", this.props.data);
         const contribView = contributors.map(item => {
             return <div key={item.id}>🧑{item.nickname}</div>
         });
@@ -58,6 +69,8 @@ class Details extends Component {
                        value={this.state.inputInvite}
                        onChange={event => this.changeInputInvite(event)}
                 />
+                <br/>
+                <button onClick={this.leaveConversation}>LEAVE</button>
             </div>
         );
     }
@@ -74,5 +87,8 @@ export default compose(
     }),
     graphql(ADD_USER_TO_CONV, {
         name: 'addUserToConv'
-    })
+    }),
+    graphql(leaveConversationGql, {
+        name: 'leaveConv'
+    }),
 )(Details);

@@ -70,3 +70,10 @@ export const ADD_CONVERSATION = gql`
             } 
         } 
     }`;
+
+export const leaveConversationGql = gql`
+    query leaveConv($id_conv: ID!){
+        leaveConversation(id_conv: $id_conv){
+            id
+        }
+    }`;
