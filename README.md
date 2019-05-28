@@ -109,3 +109,6 @@ Sprint 6############################
 Registration added by server side. email and nickname should be unique.
 Protected before empty fields. It return data about registration user.
 
+Sprint 7############################
+Second password`s field added
+Added redirection after success registration

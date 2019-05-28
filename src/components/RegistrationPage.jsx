@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import {withRouter} from "react-router-dom";
 
 class RegistrationPage extends Component {
 
@@ -7,6 +8,7 @@ class RegistrationPage extends Component {
         this.emailEl = React.createRef();
         this.nicknameEl = React.createRef();
         this.passwordEl = React.createRef();
+        this.password2El = React.createRef();
         this.state = {
         };
     }
@@ -15,15 +17,16 @@ class RegistrationPage extends Component {
         event.preventDefault();
         const email = this.emailEl.current.value;
         const password = this.passwordEl.current.value;
+        const password2 = this.password2El.current.value;
         const nicnkname = this.nicknameEl.current.value;
-        if (email.trim().length === 0 || password.trim().length === 0 || nicnkname.trim().length === 0) {
+        if (email.trim().length === 0 || password.trim().length === 0 || password2.trim().length === 0|| nicnkname.trim().length === 0) {
             return;
         }
 
         let requestBody = {
             query: `
         mutation{
-            addUser(email: "${email}", password: "${password}", nickname: "${nicnkname}"){
+            addUser(email: "${email}", password: "${password}", password2: "${password2}", nickname: "${nicnkname}"){
                 id
                 nickname
                 email
@@ -50,7 +53,8 @@ class RegistrationPage extends Component {
                 this.setState({ registered: true });      
             }else{
                 this.setState({ registered: false });    
-                console.log("Hello " + resData.data.addUser.nickname + "!");            
+                console.log("Hello " + resData.data.addUser.nickname + "!");    
+                this.props.history.push("/login");       
             }
         }).catch(err => {
             console.log(err);
@@ -70,6 +74,10 @@ class RegistrationPage extends Component {
                     <input type="password" id="password" ref={this.passwordEl} />
                 </div>
                 <div className="form-control">
+                    <label htmlFor="password">Password again</label>
+                    <input type="password" id="password2" ref={this.password2El} />
+                </div>
+                <div className="form-control">
                     <label htmlFor="nickname">Nickname</label>
                     <input type="text" ref={this.nicknameEl} />
                 </div>
@@ -84,4 +92,4 @@ class RegistrationPage extends Component {
     }
 }
 
-export default RegistrationPage;
+export default withRouter(RegistrationPage);

@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import './App.css';
 import Navigation from './components/Navigation'
-import {BrowserRouter, Route, Switch, Redirect} from "react-router-dom";
-import LandingPage from "./components/LandingPage";
+import {BrowserRouter, Route, Switch, Redirect, withRouter} from "react-router-dom";
 import NotFound from "./components/NotFound";
 import LogoutPage from "./components/LogoutPage.jsx";
 import LoginPage from "./components/LoginPage.jsx";
 import MainPage from "./components/MainPage";
 import RegistrationPage from "./components/RegistrationPage";
+ 
 
 class App extends Component {
     constructor(props) {
@@ -19,6 +19,18 @@ class App extends Component {
             tokenExpiration: ""
         };
     }
+
+    componentDidMount(){
+        this.initSession();
+    };
+
+    initSession = () => {
+        const token = localStorage.getItem('token');
+        this.setState({token: token ? token : "",
+                        isSignIn: token ? true : false });
+        console.log(this.state.token);
+
+    };
 
     changeToken = value => {
         localStorage.setItem('token', value);
@@ -45,6 +57,7 @@ class App extends Component {
         });
         console.log(this.state.isSignIn);
     };
+ 
 
     render() {
         return (
@@ -94,7 +107,7 @@ class App extends Component {
                             exact
                         />
                         <Route path="/registration"
-                            render={() => !this.state.isSignIn ? <RegistrationPage /> : <Redirect to="/" />} exact/>
+                            render={() => !this.state.isSignIn ? <RegistrationPage redirectToMain={this.redirectToMain}/> : <Redirect to="/" />} exact/>
                         <Route component={NotFound}/>
                     </Switch>
                 </div>
